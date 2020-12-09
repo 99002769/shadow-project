@@ -1,0 +1,81 @@
+Live Occupancy Services 
+
+Implement 2 API's 
+1) To get current (last 5 min) for Dining area and Service area -  /api/Live-occupancy-data
+	- This API should fetch last 5 min data from cafeoccupancybase table
+	
+		- Dao layer
+		JSONArray responseArray = new JSONArray();
+		
+			for(int i=1; i<=2; i++){
+			String spaceType = "";
+				if(i==1){
+				spaceType = "Service Area";
+				}else{
+				spaceType = "Dining Area";
+				}
+				Criteria(cafeoccupancybase.class)
+				Criteria.add(Restrictions.eq("spacetype", spaceType)
+				List<cafeoccupancybase> lst = criteria.List();
+				
+				 for (int i = 0; i < lst.size(); i++) {
+				 JSONObject jsonObj = new JSONObject();
+				 if(i==1){
+				 jsonObj.put("serviceAreaCurrentCount", lst.getPeopleCount);
+				 }else{
+				 jsonObj.put("diningAreaCurrentCount", lst.getPeopleCount);
+				 }
+                responseArray.put(jsonObj);
+				 }
+				 
+			}
+2) To get Dining area and Service area Trend Graphs - /api/Live-occupancy-trend
+	- This API should calculate last 4 hours data from current time from cafeoccupancyintermediate table 
+
+
+
+
+Database details 
+
+Create 2 schema/tables 
+1) cafeoccupancybase
+		- id PK Int AI
+		- spacetype Varchar(40) 
+		- peoplecount Int // this value will come from sensor's
+		- inserted_datetime datetime // this value will come from sensor's 
+		//Audit fields 
+		- created_date datetime
+		- created_by varchar(30)
+		- modified_date datetime
+		- modified_by varchar(30)
+		
+1, Dining Area, 10 , 2020-12-09 09:00:00, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
+2, Service Area, 4 , 2020-12-09 09:00:00, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
+3, Dining Area, 8 , 2020-12-09 09:05:00, 2020-12-09 09:05:00, Admin, 2020-12-09 09:05:00, Admin
+4, Service Area, 0 , 2020-12-09 09:05:00, 2020-12-09 09:05:00, Admin, 2020-12-09 09:05:00, Admin
+5, Dining Area, 1 , 2020-12-09 09:10:00, 2020-12-09 09:10:00, Admin, 2020-12-09 09:10:00, Admin
+6, Service Area, 3 , 2020-12-09 09:10:00, 2020-12-09 09:10:00, Admin, 2020-12-09 09:10:00, Admin
+7, Dining Area, 12 , 2020-12-09 12:15:00, 2020-12-09 12:15:00, Admin, 2020-12-09 12:15:00, Admin
+8, Service Area, 16 , 2020-12-09 12:15:00, 2020-12-09 12:15:00, Admin, 2020-12-09 12:15:00, Admin
+9, Dining Area, 21 , 2020-12-09 13:30:00, 2020-12-09 13:30:00, Admin, 2020-12-09 13:30:00, Admin
+10, Service Area, 13 , 2020-12-09 13:30:00, 2020-12-09 13:30:00, Admin, 2020-12-09 13:30:00, Admin
+
+
+2) cafeoccupancyintermediate
+		- id PK Int AI
+		- spacetype varchar(40)
+		- peoplecount int
+		- timeslot varchar(20)
+		
+		//Audit fields 
+		- created_date datetime
+		- created_by varchar(30)
+		- modified_date datetime
+		- modified_by varchar(30)
+		
+1, Dining Area, 6.3 , 2020-12-09 09:00:00, 9 AM, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
+2, Service Area, 2.3 , 2020-12-09 09:00:00, 9 AM, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
+3, Dining Area, 12 , 2020-12-09 09:00:00, 12 PM, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
+4, Service Area, 16 , 2020-12-09 09:00:00, 12 PM, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
+5, Dining Area, 21 , 2020-12-09 09:00:00, 1 PM, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
+6, Service Area, 13 , 2020-12-09 09:00:00, 1 PM, 2020-12-09 09:00:00, Admin, 2020-12-09 09:00:00, Admin
